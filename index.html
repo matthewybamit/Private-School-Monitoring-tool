@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DepEd NCR - Monitoring Tool for Private Schools</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .deped-seal {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 12px;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #1e3c72;
+            color: white;
+            font-weight: 600;
+        }
+
+        td input[type="text"],
+        td textarea {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .btn-container {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 25px 40px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .subsection {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .subsection-title {
+            font-size: 16px;
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .info-text {
+            font-size: 13px;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .note-highlight {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffc107;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .form-content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .btn-container {
+                padding: 15px 20px;
+            }
+
+            .row, .row-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 10px;
+            z-index: 9999;
+            font-size: 18px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .small-input {
+            max-width: 150px;
+        }
+
+        .inline-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .inline-group label {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">Generating DOCX file...</div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="deped-seal">DepEd<br>NCR</div>
+            <h1>Monitoring Tool for Private Schools</h1>
+            <p>Department of Education – National Capital Region<br>Quality Assurance Division</p>
+        </div>
+
+        <form id="monitoringForm" class="form-content">
+            <!-- PART 1: SCHOOL PROFILE -->
+            <div class="section">
+                <h2 class="section-title">Part 1: School Profile</h2>
+                <div class="note-highlight">
+                    <strong>Note:</strong> Part 1 of this Monitoring Tool should be accomplished by the school.
+                </div>
+                
+                <div class="form-group">
+                    <label>Schools Division Office</label>
+                    <input type="text" name="sdo">
+                </div>
+
+                <div class="form-group">
+                    <label>School Registered Name in SEC</label>
+                    <input type="text" name="schoolNameSec" required>
+                </div>
+
+                <div class="form-group">
+                    <label>School Name in DepEd Permit/Recognition</label>
+                    <input type="text" name="schoolNameDeped" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Complete Address</label>
+                    <input type="text" name="address" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <div class="row-3">
+                    <div class="form-group">
+                        <label>School ID Number</label>
+                        <input type="text" name="schoolId" required>
+                    </div>
+                    <div class="form-group">
+                        <label>LIS Account Status</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" name="lisStatus" value="Active" id="lisActive">
+                                <label for="lisActive">Active</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="lisStatus" value="Not Active" id="lisInactive">
+                                <label for="lisInactive">Not Active</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>School Contact No.</label>
+                        <input type="tel" name="contactNumber" required>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Program Offering</h3>
+                    <p class="info-text">Check if Government Authority certificates are displayed in a conspicuous place in school (e.g., Administration Office)</p>
+                    
+                    <!-- Kindergarten -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progKinder" id="progKinder">
+                            <label for="progKinder"><strong>Kindergarten</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>Permit No.</label>
+                                <input type="text" name="kinderPermitNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="kinderPermitDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Recognition No.</label>
+                                <input type="text" name="kinderRecogNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="kinderRecogDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Elementary -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progElem" id="progElem">
+                            <label for="progElem"><strong>Elementary</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>Permit No.</label>
+                                <input type="text" name="elemPermitNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="elemPermitDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Recognition No.</label>
+                                <input type="text" name="elemRecogNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="elemRecogDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Junior High School -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progJHS" id="progJHS">
+                            <label for="progJHS"><strong>Junior High School</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>Permit No.</label>
+                                <input type="text" name="jhsPermitNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="jhsPermitDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Recognition No.</label>
+                                <input type="text" name="jhsRecogNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="jhsRecogDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SPED/SNEd Program -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progSPED" id="progSPED">
+                            <label for="progSPED"><strong>SPED/SNEd Program</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>Permit No.</label>
+                                <input type="text" name="spedPermitNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="spedPermitDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label>Recognition No.</label>
+                                <input type="text" name="spedRecogNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="spedRecogDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Homeschooling Program -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progHomeschool" id="progHomeschool">
+                            <label for="progHomeschool"><strong>Homeschooling Program</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>Permit No.</label>
+                                <input type="text" name="homePermitNo">
+                            </div>
+                            <div class="form-group">
+                                <label>Date Issued</label>
+                                <input type="date" name="homePermitDate">
+                            </div>
+                            <div class="form-group">
+                                <label>Valid Until</label>
+                                <input type="date" name="homeValidUntil">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Senior High School -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="progSHS" id="progSHS">
+                            <label for="progSHS"><strong>Senior High School</strong></label>
+                        </div>
+                        <p class="info-text">Program Offerings (Track & Strand, Specialization, Date Issued)</p>
+                        <div class="form-group">
+                            <label>Program 1</label>
+                            <input type="text" name="shsProgram1" placeholder="e.g., STEM, ABM, HUMSS">
+                        </div>
+                        <div class="form-group">
+                            <label>Program 2</label>
+                            <input type="text" name="shsProgram2">
+                        </div>
+                        <div class="form-group">
+                            <label>Program 3</label>
+                            <input type="text" name="shsProgram3">
+                        </div>
+                    </div>
+
+                    <!-- International School -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="isInternational" id="isInternational">
+                            <label for="isInternational"><strong>School Identified as "International School" (IS)</strong></label>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label>By Name (uses "International")</label>
+                                <input type="text" name="intlByName">
+                            </div>
+                            <div class="form-group">
+                                <label>Through Legislation</label>
+                                <input type="text" name="intlLegislation">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Higher Education Institution -->
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="isHEI" id="isHEI">
+                            <label for="isHEI"><strong>Higher Education Institution (HEI) with K to 12 and Program Offering</strong></label>
+                        </div>
+                    </div>
+
+                    <!-- Accreditation Status (FAAP) -->
+                    <div class="form-group">
+                        <label><strong>Accreditation Status (FAAP)</strong></label>
+                        <div class="form-group">
+                            <label>Accrediting Agency</label>
+                            <input type="text" name="accreditingAgency" placeholder="e.g., PAASCU, PACSCU, PACUCOA">
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Program</th>
+                                    <th>Level</th>
+                                    <th>Valid Until</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kindergarten</td>
+                                    <td><input type="text" name="accredKinderLevel"></td>
+                                    <td><input type="date" name="accredKinderValid"></td>
+                                </tr>
+                                <tr>
+                                    <td>Elementary</td>
+                                    <td><input type="text" name="accredElemLevel"></td>
+                                    <td><input type="date" name="accredElemValid"></td>
+                                </tr>
+                                <tr>
+                                    <td>JHS</td>
+                                    <td><input type="text" name="accredJHSLevel"></td>
+                                    <td><input type="date" name="accredJHSValid"></td>
+                                </tr>
+                                <tr>
+                                    <td>SHS</td>
+                                    <td><input type="text" name="accredSHSLevel"></td>
+                                    <td><input type="date" name="accredSHSValid"></td>
+                                </tr>
+                                <tr>
+                                    <td>Complete Basic Ed. Program</td>
+                                    <td><input type="text" name="accredCompleteLevel"></td>
+                                    <td><input type="date" name="accredCompleteValid"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">School Leadership</h3>
+                    <div class="form-group">
+                        <label>Name of School Head/President/CEO</label>
+                        <input type="text" name="schoolHeadCEO">
+                    </div>
+                    <div class="form-group">
+                        <label>Name of School Principal</label>
+                        <input type="text" name="schoolPrincipal">
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Total Number of Learners Registered in the LIS</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Kinder</label>
+                            <input type="number" name="lisKinder" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 1</label>
+                            <input type="number" name="lisGrade1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 2</label>
+                            <input type="number" name="lisGrade2" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 3</label>
+                            <input type="number" name="lisGrade3" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 4</label>
+                            <input type="number" name="lisGrade4" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 5</label>
+                            <input type="number" name="lisGrade5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 6</label>
+                            <input type="number" name="lisGrade6" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 7</label>
+                            <input type="number" name="lisGrade7" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 8</label>
+                            <input type="number" name="lisGrade8" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 9</label>
+                            <input type="number" name="lisGrade9" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 10</label>
+                            <input type="number" name="lisGrade10" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 11</label>
+                            <input type="number" name="lisGrade11" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 12</label>
+                            <input type="number" name="lisGrade12" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Total Number of Learners Warm Bodies (as of January, 2025)</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Kinder</label>
+                            <input type="number" name="warmKinder" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 1</label>
+                            <input type="number" name="warmGrade1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 2</label>
+                            <input type="number" name="warmGrade2" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 3</label>
+                            <input type="number" name="warmGrade3" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 4</label>
+                            <input type="number" name="warmGrade4" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 5</label>
+                            <input type="number" name="warmGrade5" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 6</label>
+                            <input type="number" name="warmGrade6" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 7</label>
+                            <input type="number" name="warmGrade7" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 8</label>
+                            <input type="number" name="warmGrade8" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 9</label>
+                            <input type="number" name="warmGrade9" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 10</label>
+                            <input type="number" name="warmGrade10" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 11</label>
+                            <input type="number" name="warmGrade11" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Grade 12</label>
+                            <input type="number" name="warmGrade12" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Total Number of Recipient Learners</h3>
+                    <div class="row-3">
+                        <div class="form-group">
+                            <label>Voucher</label>
+                            <input type="number" name="voucherCount" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>ESC</label>
+                            <input type="number" name="escCount" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>JDVP</label>
+                            <input type="number" name="jdvpCount" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Total Number of Teachers</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Kindergarten - LPT</label>
+                            <input type="number" name="kinderLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Kindergarten - Non-Licensed</label>
+                            <input type="number" name="kinderNonLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Elementary - LPT</label>
+                            <input type="number" name="elemLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Elementary - Non-Licensed</label>
+                            <input type="number" name="elemNonLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Jr. High School - LPT</label>
+                            <input type="number" name="jhsLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Jr. High School - Non-Licensed</label>
+                            <input type="number" name="jhsNonLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>SPED - LPT</label>
+                            <input type="number" name="spedLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>SPED - Non-Licensed</label>
+                            <input type="number" name="spedNonLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Homeschooling - LPT</label>
+                            <input type="number" name="homeLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Homeschooling - Non-Licensed</label>
+                            <input type="number" name="homeNonLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Sr. High School - LPT</label>
+                            <input type="number" name="shsLPT" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Sr. High School - Non-Licensed</label>
+                            <input type="number" name="shsNonLPT" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Existence of School Child Protection and/or Anti-Bullying Policy and Committee</h3>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="childProtection" value="Yes" id="cpYes">
+                            <label for="cpYes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="childProtection" value="No" id="cpNo">
+                            <label for="cpNo">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Learning Modalities Used</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="modalInPerson" id="modalInPerson">
+                            <label for="modalInPerson">a. In-Person</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="modalBlended" id="modalBlended">
+                            <label for="modalBlended">b. Blended Learning Modality</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="modalDistance" id="modalDistance">
+                            <label for="modalDistance">c. Full Distance</label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Grade Level/s Offered</label>
+                        <input type="text" name="modalGradeLevels">
+                    </div>
+                    <div class="form-group">
+                        <label>Learning Management System (LMS) Used</label>
+                        <input type="text" name="lmsUsed" placeholder="e.g., Google Classroom, Canvas, Moodle">
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Compliance to K to 12 Curriculum / Class Programs</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Kindergarten</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumKinder" value="Yes" id="currKinderYes">
+                                    <label for="currKinderYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumKinder" value="No" id="currKinderNo">
+                                    <label for="currKinderNo">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Elementary</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumElem" value="Yes" id="currElemYes">
+                                    <label for="currElemYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumElem" value="No" id="currElemNo">
+                                    <label for="currElemNo">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>JHS</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumJHS" value="Yes" id="currJHSYes">
+                                    <label for="currJHSYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumJHS" value="No" id="currJHSNo">
+                                    <label for="currJHSNo">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>SHS</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumSHS" value="Yes" id="currSHSYes">
+                                    <label for="currSHSYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="curriculumSHS" value="No" id="currSHSNo">
+                                    <label for="currSHSNo">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">School Facilities</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>No. of Instructional Rooms</label>
+                            <input type="number" name="numInstructionalRooms" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Classroom Size in sqm (average)</label>
+                            <input type="number" name="classroomSize" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Floor Area in square meter</label>
+                            <input type="number" name="totalFloorArea" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>School Lot Area in square meter</label>
+                            <input type="number" name="schoolLotArea" min="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 2: PHYSICAL PLANT & FACILITIES -->
+            <div class="section">
+                <h2 class="section-title">Part 2: Physical Plant & Facilities</h2>
+                <div class="note-highlight">
+                    <strong>Note:</strong> Parts 2, 3 & 4 are to be accomplished on the actual day of monitoring.
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="facilitiesTable">
+                        <thead>
+                            <tr>
+                                <th>Facilities</th>
+                                <th style="width: 100px;">Evident</th>
+                                <th style="width: 100px;">Not Evident</th>
+                                <th style="width: 250px;">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>School building/s</td>
+                                <td><input type="checkbox" name="fac_building_evident"></td>
+                                <td><input type="checkbox" name="fac_building_not"></td>
+                                <td><input type="text" name="fac_building_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Activity/Athletics Area</td>
+                                <td><input type="checkbox" name="fac_athletics_evident"></td>
+                                <td><input type="checkbox" name="fac_athletics_not"></td>
+                                <td><input type="text" name="fac_athletics_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Playground</td>
+                                <td><input type="checkbox" name="fac_playground_evident"></td>
+                                <td><input type="checkbox" name="fac_playground_not"></td>
+                                <td><input type="text" name="fac_playground_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Classrooms</td>
+                                <td><input type="checkbox" name="fac_classrooms_evident"></td>
+                                <td><input type="checkbox" name="fac_classrooms_not"></td>
+                                <td><input type="text" name="fac_classrooms_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Medical and Dental Clinic</td>
+                                <td><input type="checkbox" name="fac_clinic_evident"></td>
+                                <td><input type="checkbox" name="fac_clinic_not"></td>
+                                <td><input type="text" name="fac_clinic_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Library/Learning Resource Center</td>
+                                <td><input type="checkbox" name="fac_library_evident"></td>
+                                <td><input type="checkbox" name="fac_library_not"></td>
+                                <td><input type="text" name="fac_library_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Computer Laboratory</td>
+                                <td><input type="checkbox" name="fac_computer_evident"></td>
+                                <td><input type="checkbox" name="fac_computer_not"></td>
+                                <td><input type="text" name="fac_computer_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Registrar's Office</td>
+                                <td><input type="checkbox" name="fac_registrar_evident"></td>
+                                <td><input type="checkbox" name="fac_registrar_not"></td>
+                                <td><input type="text" name="fac_registrar_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Faculty Room</td>
+                                <td><input type="checkbox" name="fac_faculty_evident"></td>
+                                <td><input type="checkbox" name="fac_faculty_not"></td>
+                                <td><input type="text" name="fac_faculty_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Guidance & Counselling Office (from Gr. 1)</td>
+                                <td><input type="checkbox" name="fac_guidance_evident"></td>
+                                <td><input type="checkbox" name="fac_guidance_not"></td>
+                                <td><input type="text" name="fac_guidance_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Canteen</td>
+                                <td><input type="checkbox" name="fac_canteen_evident"></td>
+                                <td><input type="checkbox" name="fac_canteen_not"></td>
+                                <td><input type="text" name="fac_canteen_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Principal's Office</td>
+                                <td><input type="checkbox" name="fac_principal_evident"></td>
+                                <td><input type="checkbox" name="fac_principal_not"></td>
+                                <td><input type="text" name="fac_principal_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Science Laboratory/ies (from Gr. 4)<br>SHS STEM -- min. of 3 laboratories</td>
+                                <td><input type="checkbox" name="fac_science_evident"></td>
+                                <td><input type="checkbox" name="fac_science_not"></td>
+                                <td><input type="text" name="fac_science_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Practice House & Industrial Arts Area (from Gr. 4)</td>
+                                <td><input type="checkbox" name="fac_practice_evident"></td>
+                                <td><input type="checkbox" name="fac_practice_not"></td>
+                                <td><input type="text" name="fac_practice_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Emergency equipment</td>
+                                <td><input type="checkbox" name="fac_emergency_evident"></td>
+                                <td><input type="checkbox" name="fac_emergency_not"></td>
+                                <td><input type="text" name="fac_emergency_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Emergency Signages</td>
+                                <td><input type="checkbox" name="fac_signages_evident"></td>
+                                <td><input type="checkbox" name="fac_signages_not"></td>
+                                <td><input type="text" name="fac_signages_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Fire Exit</td>
+                                <td><input type="checkbox" name="fac_fireexit_evident"></td>
+                                <td><input type="checkbox" name="fac_fireexit_not"></td>
+                                <td><input type="text" name="fac_fireexit_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Male Restroom</td>
+                                <td><input type="checkbox" name="fac_malerest_evident"></td>
+                                <td><input type="checkbox" name="fac_malerest_not"></td>
+                                <td><input type="text" name="fac_malerest_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Female Restroom</td>
+                                <td><input type="checkbox" name="fac_femalerest_evident"></td>
+                                <td><input type="checkbox" name="fac_femalerest_not"></td>
+                                <td><input type="text" name="fac_femalerest_remarks"></td>
+                            </tr>
+                            <tr>
+                                <td>Other Facilities</td>
+                                <td><input type="checkbox" name="fac_other_evident"></td>
+                                <td><input type="checkbox" name="fac_other_not"></td>
+                                <td><input type="text" name="fac_other_remarks"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">Other SHS Laboratories</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabTVL" id="shsLabTVL">
+                            <label for="shsLabTVL">TVL Track (specify lab)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabHE" id="shsLabHE">
+                            <label for="shsLabHE">HE</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabICT" id="shsLabICT">
+                            <label for="shsLabICT">ICT</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabIA" id="shsLabIA">
+                            <label for="shsLabIA">IA</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabAFA" id="shsLabAFA">
+                            <label for="shsLabAFA">AFA</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabArts" id="shsLabArts">
+                            <label for="shsLabArts">Arts & Design Track</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabSports" id="shsLabSports">
+                            <label for="shsLabSports">Sports Track</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="shsLabUnique" id="shsLabUnique">
+                            <label for="shsLabUnique">Unique Track</label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Specify TVL Lab Details (if applicable)</label>
+                        <input type="text" name="shsLabTVLDetails">
+                    </div>
+                    <div class="form-group">
+                        <label>Other SHS Laboratory Remarks</label>
+                        <textarea name="shsLabRemarks" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 3: OTHER FINDINGS -->
+            <div class="section">
+                <h2 class="section-title">Part 3: Other Findings</h2>
+                <div class="note-highlight">
+                    <strong>Note:</strong> Remarks and observations on the day of actual visit.
+                </div>
+                <div class="form-group">
+                    <label>General Observations, Remarks, and Findings</label>
+                    <textarea name="generalObservations" rows="10" placeholder="Enter any additional findings, observations, commendations, or concerns during the monitoring visit..."></textarea>
+                </div>
+            </div>
+
+            <!-- PART 4: STATUS OF SIGNIFICANT FINDINGS -->
+            <div class="section">
+                <h2 class="section-title">Part 4: Status of the Significant Findings of the Monitoring Team in March 2024</h2>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Adverse/Significant Findings</th>
+                                <th style="width: 50%;">Status/Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea name="finding1" rows="4"></textarea></td>
+                                <td><textarea name="status1" rows="4"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><textarea name="finding2" rows="4"></textarea></td>
+                                <td><textarea name="status2" rows="4"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><textarea name="finding3" rows="4"></textarea></td>
+                                <td><textarea name="status3" rows="4"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SIGNATURES SECTION -->
+            <div class="section">
+                <h2 class="section-title">Signatures and Monitoring Details</h2>
+                
+                <div class="form-group">
+                    <label>Date Inspected/Monitored</label>
+                    <input type="date" name="monitorDate" required>
+                </div>
+
+                <h3 class="subsection-title">Prepared by:</h3>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Monitor Name (Signature Over Printed Name)</label>
+                        <input type="text" name="monitorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text" name="monitorPosition" placeholder="e.g., Education Program Supervisor">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SDO Office/Unit</label>
+                    <input type="text" name="sdoOfficeUnit">
+                </div>
+
+                <h3 class="subsection-title">Conforme:</h3>
+                <div class="row">
+                    <div class="form-group">
+                        <label>School Head Name (Signature Over Printed Name)</label>
+                        <input type="text" name="schoolHeadName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" name="conformeDate">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="btn-container">
+            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            <button type="button" class="btn btn-primary" onclick="generateDocx()">Download Report (DOCX)</button>
+        </div>
+    </div>
+
+    <script>
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all fields?')) {
+                document.getElementById('monitoringForm').reset();
+            }
+        }
+
+        function getFormData() {
+            const form = document.getElementById('monitoringForm');
+            const data = {};
+
+            // Text inputs, emails, dates, numbers, textareas
+            const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="number"], textarea');
+            inputs.forEach(input => {
+                data[input.name] = input.value || '';
+            });
+
+            // Radio buttons
+            const radios = form.querySelectorAll('input[type="radio"]:checked');
+            radios.forEach(radio => {
+                data[radio.name] = radio.value;
+            });
+
+            // Individual checkboxes
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                data[cb.name] = cb.checked;
+            });
+
+            return data;
+        }
+
+        function generateDocx() {
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+
+            setTimeout(() => {
+                try {
+                    const data = getFormData();
+                    const schoolName = data.schoolNameSec || 'School';
+                    const date = data.monitorDate || new Date().toISOString().split('T')[0];
+                    
+                    createWordDocument(data, `Monitoring_Tool_${schoolName.replace(/[^a-z0-9]/gi, '_')}_${date}.doc`);
+                    
+                } catch (error) {
+                    alert('Error generating document: ' + error.message);
+                } finally {
+                    loading.classList.remove('active');
+                }
+            }, 500);
+        }
+
+        function formatCheckbox(value) {
+            return value ? '☑' : '☐';
+        }
+
+        function createWordDocument(data, fileName) {
+            // Helper function to format grade level data
+            function formatGradeLevels(prefix) {
+                return `
+                    <tr>
+                        <td>Kinder: ${data[prefix + 'Kinder'] || '__'}</td>
+                        <td>Grade 7: ${data[prefix + 'Grade7'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 1: ${data[prefix + 'Grade1'] || '__'}</td>
+                        <td>Grade 8: ${data[prefix + 'Grade8'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 2: ${data[prefix + 'Grade2'] || '__'}</td>
+                        <td>Grade 9: ${data[prefix + 'Grade9'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 3: ${data[prefix + 'Grade3'] || '__'}</td>
+                        <td>Grade 10: ${data[prefix + 'Grade10'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 4: ${data[prefix + 'Grade4'] || '__'}</td>
+                        <td>Grade 11: ${data[prefix + 'Grade11'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 5: ${data[prefix + 'Grade5'] || '__'}</td>
+                        <td>Grade 12: ${data[prefix + 'Grade12'] || '__'}</td>
+                    </tr>
+                    <tr>
+                        <td>Grade 6: ${data[prefix + 'Grade6'] || '__'}</td>
+                        <td></td>
+                    </tr>
+                `;
+            }
+
+            const htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>DepEd Monitoring Tool</title>
+                    <style>
+                        body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.3; margin: 0.5in; }
+                        h1 { text-align: center; font-size: 14pt; font-weight: bold; margin: 10pt 0; }
+                        table { width: 100%; border-collapse: collapse; margin: 5pt 0; }
+                        th, td { border: 1px solid #000; padding: 5pt; vertical-align: top; }
+                        th { font-weight: bold; }
+                        .no-border { border: none; }
+                        .header-text { text-align: center; margin: 5pt 0; }
+                        .section-title { font-weight: bold; font-size: 11pt; margin-top: 15pt; }
+                        .underline { border-bottom: 1px solid #000; display: inline-block; min-width: 200px; }
+                        p { margin: 5pt 0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>MONITORING TOOL FOR PRIVATE SCHOOLS</h1>
+                    
+                    <p class="section-title">PART 1: SCHOOL PROFILE</p>
+                    <p><em>(Part 1 of this Monitoring Tool should be accomplished by the school)</em></p>
+                    
+                    <table>
+                        <tr>
+                            <td colspan="3"><strong>Schools Division Office</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.sdo || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>School Registered Name in SEC</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.schoolNameSec || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>School Name in DepEd Permit/Recognition</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.schoolNameDeped || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Complete Address:</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.address || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Email Address:</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.email || ''}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>School ID Number:</strong><br>${data.schoolId || ''}</td>
+                            <td><strong>LIS Account Status</strong><br>
+                                ${formatCheckbox(data.lisStatus === 'Active')} Active<br>
+                                ${formatCheckbox(data.lisStatus === 'Not Active')} Not Active
+                            </td>
+                            <td><strong>School Contact No.</strong><br>${data.contactNumber || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Program Offering</strong><br>
+                            <em>(Check if Government Authority certificates are displayed in a conspicuous place in school e.g. Administration Office)</em></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                ${formatCheckbox(data.progKinder)} <strong>Kindergarten</strong><br>
+                                __ Permit No. ${data.kinderPermitNo || '_________________'}<br>
+                                Date Issued ${data.kinderPermitDate || '_________________'}<br>
+                                __ Recognition No. ${data.kinderRecogNo || '_________________'}<br>
+                                Date Issued ${data.kinderRecogDate || '_________________'}<br><br>
+                                
+                                ${formatCheckbox(data.progElem)} <strong>Elementary</strong><br>
+                                __ Permit No. ${data.elemPermitNo || '_________________'}<br>
+                                Date Issued ${data.elemPermitDate || '_________________'}<br>
+                                __ Recognition No. ${data.elemRecogNo || '_________________'}<br>
+                                Date Issued ${data.elemRecogDate || '_________________'}<br><br>
+                                
+                                ${formatCheckbox(data.progJHS)} <strong>Junior High School</strong><br>
+                                __ Permit No. ${data.jhsPermitNo || '_________________'}<br>
+                                Date Issued ${data.jhsPermitDate || '_________________'}<br>
+                                __ Recognition No. ${data.jhsRecogNo || '_________________'}<br>
+                                Date Issued ${data.jhsRecogDate || '_________________'}<br><br>
+                                
+                                ${formatCheckbox(data.progSPED)} <strong>SPED/SNEd Program</strong><br>
+                                __ Permit No. ${data.spedPermitNo || '_________________'}<br>
+                                Date Issued ${data.spedPermitDate || '_________________'}<br>
+                                __ Recognition No. ${data.spedRecogNo || '_________________'}<br>
+                                Date Issued ${data.spedRecogDate || '_________________'}<br><br>
+                                
+                                ${formatCheckbox(data.progHomeschool)} <strong>Homeschooling Program</strong><br>
+                                __ Permit No. ${data.homePermitNo || '_________________'}<br>
+                                Date Issued ${data.homePermitDate || '_________________'}<br>
+                                Valid until ${data.homeValidUntil || '_________________'}
+                            </td>
+                            <td>
+                                ${formatCheckbox(data.progSHS)} <strong>Senior High School</strong><br>
+                                Program Offerings (Track & Strand, Specialization, Date Issued)<br>
+                                1. ${data.shsProgram1 || '_________________'}<br>
+                                2. ${data.shsProgram2 || '_________________'}<br>
+                                3. ${data.shsProgram3 || '_________________'}<br><br>
+                                
+                                ${formatCheckbox(data.isInternational)} <strong>School Identified as "International School" (IS)</strong><br>
+                                ____ by Name (uses "International"): ${data.intlByName || '______'}<br>
+                                ____ Through Legislation: ${data.intlLegislation || '______'}<br><br>
+                                
+                                ${formatCheckbox(data.isHEI)} <strong>Higher Education Institution (HEI) with K to 12 and Program Offering</strong><br><br>
+                                
+                                <strong>Accreditation Status (FAAP)</strong><br>
+                                <table style="margin-top: 5pt;">
+                                    <tr>
+                                        <th>Program</th>
+                                        <th>Level</th>
+                                        <th>Valid Until</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Kindergarten</td>
+                                        <td>${data.accredKinderLevel || ''}</td>
+                                        <td>${data.accredKinderValid || ''}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Elementary</td>
+                                        <td>${data.accredElemLevel || ''}</td>
+                                        <td>${data.accredElemValid || ''}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>JHS</td>
+                                        <td>${data.accredJHSLevel || ''}</td>
+                                        <td>${data.accredJHSValid || ''}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SHS</td>
+                                        <td>${data.accredSHSLevel || ''}</td>
+                                        <td>${data.accredSHSValid || ''}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Complete Basic Ed. Program</td>
+                                        <td>${data.accredCompleteLevel || ''}</td>
+                                        <td>${data.accredCompleteValid || ''}</td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <strong>Accrediting Agency:</strong> ${data.accreditingAgency || '_________________'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Name of School Head/President/CEO</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.schoolHeadCEO || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Name of School Principal</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">${data.schoolPrincipal || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Total Number of Learners Registered in the LIS</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <table>
+                                    ${formatGradeLevels('lis')}
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Total Number of Learners Warm Bodies (as of January, 2025)</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <table>
+                                    ${formatGradeLevels('warm')}
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Total Number of Recipient Learners</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Voucher ${data.voucherCount || '____'} &nbsp;&nbsp;&nbsp;
+                                ESC ${data.escCount || '____'} &nbsp;&nbsp;&nbsp;
+                                JDVP ${data.jdvpCount || '____'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Total Number of Teachers</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                • Kindergarten - LPT ${data.kinderLPT || '__'} &nbsp; Non-Licensed ${data.kinderNonLPT || '__'}<br>
+                                • Elementary - LPT ${data.elemLPT || '__'} &nbsp; Non-Licensed ${data.elemNonLPT || '__'}<br>
+                                • Jr. High School - LPT ${data.jhsLPT || '__'} &nbsp; Non-Licensed ${data.jhsNonLPT || '__'}<br>
+                                • SPED - LPT ${data.spedLPT || '__'} &nbsp; Non-Licensed ${data.spedNonLPT || '__'}<br>
+                                • Homeschooling - LPT ${data.homeLPT || '__'} &nbsp; Non-Licensed ${data.homeNonLPT || '__'}<br>
+                                • Sr. High School - LPT ${data.shsLPT || '__'} &nbsp; Non-Licensed ${data.shsNonLPT || '__'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Existence of School Child Protection and/or Anti-Bullying Policy and Committee</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Yes: ${formatCheckbox(data.childProtection === 'Yes')} &nbsp;&nbsp;&nbsp;
+                                No: ${formatCheckbox(data.childProtection === 'No')}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Learning Modalities Used</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                ${formatCheckbox(data.modalInPerson)} a. In-Person<br>
+                                ${formatCheckbox(data.modalBlended)} b. Blended Learning Modality<br>
+                                ${formatCheckbox(data.modalDistance)} c. Full Distance<br><br>
+                                Grade Level/s Offered: ${data.modalGradeLevels || '_________________'}<br><br>
+                                Learning Management System (LMS) Used: ${data.lmsUsed || '_________________'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Compliance to K to 12 Curriculum / Class Programs</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                Kindergarten ${formatCheckbox(data.curriculumKinder === 'Yes')} Yes ${formatCheckbox(data.curriculumKinder === 'No')} No<br>
+                                Elementary ${formatCheckbox(data.curriculumElem === 'Yes')} Yes ${formatCheckbox(data.curriculumElem === 'No')} No<br>
+                                JHS ${formatCheckbox(data.curriculumJHS === 'Yes')} Yes ${formatCheckbox(data.curriculumJHS === 'No')} No<br>
+                                SHS ${formatCheckbox(data.curriculumSHS === 'Yes')} Yes ${formatCheckbox(data.curriculumSHS === 'No')} No
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>School Facilities</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                No. of Instructional Rooms: ${data.numInstructionalRooms || '_________________'}<br>
+                                Classroom Size in sqm (average): ${data.classroomSize || '_________________'}<br>
+                                Total Floor Area in square meter: ${data.totalFloorArea || '_________________'}<br>
+                                School Lot Area in square meter: ${data.schoolLotArea || '_________________'}
+                            </td>
+                        </tr>
+                    </table>
+
+                    <p class="section-title">PART 2: PHYSICAL PLANT & FACILITIES</p>
+                    <p><em>(Parts 2, 3 & 4 are to be accomplished on the actual day of monitoring)</em></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Facilities</th>
+                                <th style="width: 80px;">Evident</th>
+                                <th style="width: 80px;">Not Evident</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>School building/s</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_building_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_building_not)}</td>
+                                <td>${data.fac_building_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Activity/Athletics Area</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_athletics_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_athletics_not)}</td>
+                                <td>${data.fac_athletics_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Playground</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_playground_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_playground_not)}</td>
+                                <td>${data.fac_playground_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Classrooms</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_classrooms_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_classrooms_not)}</td>
+                                <td>${data.fac_classrooms_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Medical and Dental Clinic</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_clinic_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_clinic_not)}</td>
+                                <td>${data.fac_clinic_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Library/Learning Resource Center</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_library_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_library_not)}</td>
+                                <td>${data.fac_library_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Computer Laboratory</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_computer_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_computer_not)}</td>
+                                <td>${data.fac_computer_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Registrar's Office</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_registrar_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_registrar_not)}</td>
+                                <td>${data.fac_registrar_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Faculty Room</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_faculty_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_faculty_not)}</td>
+                                <td>${data.fac_faculty_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Guidance & Counselling Office (from Gr. 1)</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_guidance_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_guidance_not)}</td>
+                                <td>${data.fac_guidance_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Canteen</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_canteen_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_canteen_not)}</td>
+                                <td>${data.fac_canteen_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Principal's Office</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_principal_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_principal_not)}</td>
+                                <td>${data.fac_principal_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Science Laboratory/ies (from Gr. 4)<br>SHS STEM -- min. of 3 laboratories</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_science_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_science_not)}</td>
+                                <td>${data.fac_science_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Practice House & Industrial Arts Area (from Gr. 4)</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_practice_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_practice_not)}</td>
+                                <td>${data.fac_practice_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Emergency equipment</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_emergency_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_emergency_not)}</td>
+                                <td>${data.fac_emergency_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Emergency Signages</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_signages_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_signages_not)}</td>
+                                <td>${data.fac_signages_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Fire Exit</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_fireexit_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_fireexit_not)}</td>
+                                <td>${data.fac_fireexit_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Male Restroom</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_malerest_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_malerest_not)}</td>
+                                <td>${data.fac_malerest_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Female Restroom</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_femalerest_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_femalerest_not)}</td>
+                                <td>${data.fac_femalerest_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td>Other Facilities</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_other_evident)}</td>
+                                <td style="text-align: center;">${formatCheckbox(data.fac_other_not)}</td>
+                                <td>${data.fac_other_remarks || ''}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"><strong>Other SHS Laboratories</strong><br>
+                                    ${formatCheckbox(data.shsLabTVL)} TVL Track (specify lab): ${data.shsLabTVLDetails || ''}<br>
+                                    ${formatCheckbox(data.shsLabHE)} HE<br>
+                                    ${formatCheckbox(data.shsLabICT)} ICT<br>
+                                    ${formatCheckbox(data.shsLabIA)} IA<br>
+                                    ${formatCheckbox(data.shsLabAFA)} AFA<br>
+                                    ${formatCheckbox(data.shsLabArts)} Arts & Design Track<br>
+                                    ${formatCheckbox(data.shsLabSports)} Sports Track<br>
+                                    ${formatCheckbox(data.shsLabUnique)} Unique Track
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">${data.shsLabRemarks || ''}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="section-title">PART 3: OTHER FINDINGS:</p>
+                    <p><em>(Remarks and observations on the day of actual visit)</em></p>
+                    <p>${(data.generalObservations || '').replace(/\n/g, '<br>')}</p>
+                    <p>_________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________</p>
+
+                    <p class="section-title">PART 4: STATUS OF THE SIGNIFICANT FINDINGS OF THE MONITORING TEAM IN MARCH 2024.</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">ADVERSE/SIGNIFICANT FINDINGS</th>
+                                <th style="width: 50%;">STATUS/UPDATE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${(data.finding1 || '').replace(/\n/g, '<br>')}</td>
+                                <td>${(data.status1 || '').replace(/\n/g, '<br>')}</td>
+                            </tr>
+                            <tr>
+                                <td>${(data.finding2 || '').replace(/\n/g, '<br>')}</td>
+                                <td>${(data.status2 || '').replace(/\n/g, '<br>')}</td>
+                            </tr>
+                            <tr>
+                                <td>${(data.finding3 || '').replace(/\n/g, '<br>')}</td>
+                                <td>${(data.status3 || '').replace(/\n/g, '<br>')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p style="margin-top: 20pt;">Date Inspected/Monitored: <span class="underline">${data.monitorDate || '_________________'}</span></p>
+
+                    <p style="margin-top: 20pt;"><strong>Prepared by:</strong></p>
+                    
+                    <p style="margin-top: 40pt;">
+                    <span class="underline">${data.monitorName || '_________________________________'}</span><br>
+                    <em>Signature Over Printed Name of Monitor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Position: ${data.monitorPosition || '_________________'}</em>
+                    </p>
+
+                    <p><strong>SDO Office/Unit</strong> <span class="underline">${data.sdoOfficeUnit || '_________________________________'}</span></p>
+
+                    <p style="margin-top: 20pt;"><strong>Conforme:</strong></p>
+
+                    <p style="margin-top: 40pt;">
+                    <span class="underline">${data.schoolHeadName || '_________________________________'}</span><br>
+                    <em>Signature Over Printed Name of School Head</em>
+                    </p>
+
+                    <p>Date: <span class="underline">${data.conformeDate || '_________________'}</span></p>
+
+                </body>
+                </html>
+            `;
+
+            // Convert HTML to Word-compatible format
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('✅ Document downloaded successfully!\n\nThe monitoring report has been saved and can be opened in Microsoft Word.');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            const monitorDateInput = document.querySelector('input[name="monitorDate"]');
+            if (monitorDateInput) {
+                monitorDateInput.value = today;
+            }
+            
+            // Add validation messages
+            const requiredInputs = document.querySelectorAll('input[required]');
+            requiredInputs.forEach(input => {
+                input.addEventListener('invalid', function() {
+                    this.setCustomValidity('This field is required for the monitoring report.');
+                });
+                input.addEventListener('input', function() {
+                    this.setCustomValidity('');
+                });
+            });
+
+            // Checkbox mutual exclusivity for facilities
+            const facilities = [
+                'building', 'athletics', 'playground', 'classrooms', 'clinic', 
+                'library', 'computer', 'registrar', 'faculty', 'guidance', 
+                'canteen', 'principal', 'science', 'practice', 'emergency', 
+                'signages', 'fireexit', 'malerest', 'femalerest', 'other'
+            ];
+            
+            facilities.forEach(fac => {
+                const evidentBox = document.querySelector(`input[name="fac_${fac}_evident"]`);
+                const notEvidentBox = document.querySelector(`input[name="fac_${fac}_not"]`);
+                
+                if (evidentBox && notEvidentBox) {
+                    evidentBox.addEventListener('change', function() {
+                        if (this.checked) notEvidentBox.checked = false;
+                    });
+                    notEvidentBox.addEventListener('change', function() {
+                        if (this.checked) evidentBox.checked = false;
+                    });
+                }
+            });
+
+            console.log('✅ DepEd Monitoring Tool initialized successfully');
+        });
+    </script>
+</body>
+</html>
