@@ -336,14 +336,14 @@
                         </div>
                     </div>
 
-                    <!-- Accreditation Status (FAAP) -->
-                    <div class="form-group">
+                    <!-- Accreditation Status (FAAP) - CONDITIONAL -->
+                    <div class="form-group" id="accreditationSection">
                         <label><strong>Accreditation Status (FAAP)</strong></label>
                         <div class="form-group">
                             <label>Accrediting Agency</label>
                             <input type="text" name="accreditingAgency" placeholder="e.g., PAASCU, PACSCU, PACUCOA">
                         </div>
-                        <table>
+                        <table id="accreditationTable">
                             <thead>
                                 <tr>
                                     <th>Program</th>
@@ -352,22 +352,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="accred-row" data-program="kindergarten">
                                     <td>Kindergarten</td>
                                     <td><input type="text" name="accredKinderLevel"></td>
                                     <td><input type="date" name="accredKinderValid"></td>
                                 </tr>
-                                <tr>
+                                <tr class="accred-row" data-program="elementary">
                                     <td>Elementary</td>
                                     <td><input type="text" name="accredElemLevel"></td>
                                     <td><input type="date" name="accredElemValid"></td>
                                 </tr>
-                                <tr>
+                                <tr class="accred-row" data-program="jhs">
                                     <td>JHS</td>
                                     <td><input type="text" name="accredJHSLevel"></td>
                                     <td><input type="date" name="accredJHSValid"></td>
                                 </tr>
-                                <tr>
+                                <tr class="accred-row" data-program="shs">
                                     <td>SHS</td>
                                     <td><input type="text" name="accredSHSLevel"></td>
                                     <td><input type="date" name="accredSHSValid"></td>
@@ -395,146 +395,185 @@
                     </div>
                 </div>
 
-                <div class="subsection">
+                <div class="subsection" id="lisSection">
                     <h3 class="subsection-title">Total Number of Learners Registered in the LIS</h3>
                     <div class="row">
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="kindergarten">
                             <label>Kinder</label>
                             <input type="number" name="lisKinder" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 1</label>
                             <input type="number" name="lisGrade1" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 2</label>
                             <input type="number" name="lisGrade2" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 3</label>
                             <input type="number" name="lisGrade3" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 4</label>
                             <input type="number" name="lisGrade4" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 5</label>
                             <input type="number" name="lisGrade5" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="elementary">
                             <label>Grade 6</label>
                             <input type="number" name="lisGrade6" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="jhs">
                             <label>Grade 7</label>
                             <input type="number" name="lisGrade7" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="jhs">
                             <label>Grade 8</label>
                             <input type="number" name="lisGrade8" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="jhs">
                             <label>Grade 9</label>
                             <input type="number" name="lisGrade9" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="jhs">
                             <label>Grade 10</label>
                             <input type="number" name="lisGrade10" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="shs">
                             <label>Grade 11</label>
                             <input type="number" name="lisGrade11" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group lis-field" data-program="shs">
                             <label>Grade 12</label>
                             <input type="number" name="lisGrade12" min="0">
                         </div>
                     </div>
                 </div>
 
-                <div class="subsection">
-                    <h3 class="subsection-title">Total Number of Learners Warm Bodies (as of January, 2025)</h3>
+                <div class="subsection" id="warmBodiesSection">
+                    <h3 class="subsection-title">Total Number of Learners Head Counts</h3>
                     <div class="row">
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="kindergarten">
                             <label>Kinder</label>
                             <input type="number" name="warmKinder" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 1</label>
                             <input type="number" name="warmGrade1" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 2</label>
                             <input type="number" name="warmGrade2" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 3</label>
                             <input type="number" name="warmGrade3" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 4</label>
                             <input type="number" name="warmGrade4" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 5</label>
                             <input type="number" name="warmGrade5" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="elementary">
                             <label>Grade 6</label>
                             <input type="number" name="warmGrade6" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="jhs">
                             <label>Grade 7</label>
                             <input type="number" name="warmGrade7" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="jhs">
                             <label>Grade 8</label>
                             <input type="number" name="warmGrade8" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="jhs">
                             <label>Grade 9</label>
                             <input type="number" name="warmGrade9" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="jhs">
                             <label>Grade 10</label>
                             <input type="number" name="warmGrade10" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="shs">
                             <label>Grade 11</label>
                             <input type="number" name="warmGrade11" min="0">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group warm-field" data-program="shs">
                             <label>Grade 12</label>
                             <input type="number" name="warmGrade12" min="0">
                         </div>
                     </div>
                 </div>
 
-                <!-- CHANGE 4: Updated title for Recipient Learners -->
+                <!-- UPDATED: Government Subsidies with Yes/No Options -->
                 <div class="subsection">
                     <h3 class="subsection-title">Total Number of Learners Recipients of Government Subsidies</h3>
                     <div class="row-3">
-                        <div class="form-group">
-                            <label>Voucher</label>
-                            <input type="number" name="voucherCount" min="0">
+                        <div class="form-group subsidy-group">
+                            <label><strong>Voucher</strong></label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="voucherYes" name="voucherOffered" value="yes">
+                                    <label for="voucherYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="voucherNo" name="voucherOffered" value="no">
+                                    <label for="voucherNo">No</label>
+                                </div>
+                            </div>
+                            <div class="subsidy-count" id="voucherCountBlock" style="margin-top: 10px;">
+                                <label>Number of Voucher Recipients</label>
+                                <input type="number" name="voucherCount" id="voucherCount" min="0">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>ESC</label>
-                            <input type="number" name="escCount" min="0">
+                        <div class="form-group subsidy-group">
+                            <label><strong>ESC</strong></label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="escYes" name="escOffered" value="yes">
+                                    <label for="escYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="escNo" name="escOffered" value="no">
+                                    <label for="escNo">No</label>
+                                </div>
+                            </div>
+                            <div class="subsidy-count" id="escCountBlock" style="margin-top: 10px;">
+                                <label>Number of ESC Recipients</label>
+                                <input type="number" name="escCount" id="escCount" min="0">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>JDVP</label>
-                            <input type="number" name="jdvpCount" min="0">
+                        <div class="form-group subsidy-group">
+                            <label><strong>JDVP</strong></label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="jdvpYes" name="jdvpOffered" value="yes">
+                                    <label for="jdvpYes">Yes</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="jdvpNo" name="jdvpOffered" value="no">
+                                    <label for="jdvpNo">No</label>
+                                </div>
+                            </div>
+                            <div class="subsidy-count" id="jdvpCountBlock" style="margin-top: 10px;">
+                                <label>Number of JDVP Recipients</label>
+                                <input type="number" name="jdvpCount" id="jdvpCount" min="0">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CHANGE 5: Total Number of Teachers - Table Structure -->
-                <div class="subsection">
+                <!-- CHANGE 5: Total Number of Teachers - Table Structure - CONDITIONAL -->
+                <div class="subsection" id="teachersSection">
                     <h3 class="subsection-title">Total Number of Teachers</h3>
                     <div class="table-responsive">
-                        <table>
+                        <table id="teachersTable">
                             <thead>
                                 <tr>
                                     <th>Grade Level</th>
@@ -543,22 +582,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="teacher-row" data-program="kindergarten">
                                     <td>Kindergarten</td>
                                     <td><input type="number" name="kinderLPT" min="0" value="0"></td>
                                     <td><input type="number" name="kinderNonLPT" min="0" value="0"></td>
                                 </tr>
-                                <tr>
+                                <tr class="teacher-row" data-program="elementary">
                                     <td>Elementary</td>
                                     <td><input type="number" name="elemLPT" min="0" value="0"></td>
                                     <td><input type="number" name="elemNonLPT" min="0" value="0"></td>
                                 </tr>
-                                <tr>
+                                <tr class="teacher-row" data-program="jhs">
                                     <td>Junior High School (JHS)</td>
                                     <td><input type="number" name="jhsLPT" min="0" value="0"></td>
                                     <td><input type="number" name="jhsNonLPT" min="0" value="0"></td>
                                 </tr>
-                                <tr>
+                                <tr class="teacher-row" data-program="shs">
                                     <td>Senior High School (SHS)</td>
                                     <td><input type="number" name="shsLPT" min="0" value="0"></td>
                                     <td><input type="number" name="shsNonLPT" min="0" value="0"></td>
@@ -609,10 +648,10 @@
                     </div>
                 </div>
 
-                <div class="subsection">
+                <div class="subsection" id="curriculumSection">
                     <h3 class="subsection-title">Compliance to K to 12 Curriculum / Class Programs</h3>
                     <div class="row">
-                        <div class="form-group">
+                        <div class="form-group curriculum-field" data-program="kindergarten">
                             <label>Kindergarten</label>
                             <div class="radio-group">
                                 <div class="radio-item">
@@ -625,7 +664,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group curriculum-field" data-program="elementary">
                             <label>Elementary</label>
                             <div class="radio-group">
                                 <div class="radio-item">
@@ -638,7 +677,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group curriculum-field" data-program="jhs">
                             <label>JHS</label>
                             <div class="radio-group">
                                 <div class="radio-item">
@@ -651,7 +690,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group curriculum-field" data-program="shs">
                             <label>SHS</label>
                             <div class="radio-group">
                                 <div class="radio-item">
@@ -832,7 +871,7 @@
                     </table>
                 </div>
 
-                <div class="subsection">
+                <div class="subsection" id="shsLabsSection">
                     <h3 class="subsection-title">Other SHS Laboratories</h3>
                     <div class="checkbox-group">
                         <div class="checkbox-item">
@@ -893,7 +932,7 @@
 
             <!-- PART 4: STATUS OF SIGNIFICANT FINDINGS -->
             <div class="section">
-                <h2 class="section-title">Part 4: Status of the Significant Findings of the Monitoring Team in March 2024</h2>
+                <h2 class="section-title">Part 4: Status of the Significant Findings of the Monitoring Team During The Previous Monitoring</h2>
                 
                 <div class="table-responsive">
                     <table>
@@ -923,7 +962,7 @@
 
             <!-- SIGNATURES SECTION -->
             <div class="section">
-                <h2 class="section-title">Signatures and Monitoring Details</h2>
+                <h2 class="section-title">Signatures and Monitors Details</h2>
                 
                 <div class="form-group">
                     <label>Date Inspected/Monitored</label>
@@ -965,9 +1004,8 @@
             <button type="button" class="btn btn-secondary" onclick="clearSavedData()" style="background: #dc3545;">Clear Saved Data</button>
             <button type="button" class="btn btn-primary" onclick="generateDocx()">Download Report (DOCX)</button>
         </div>
-
-
-    <script src="script.js"></script>
+    </div>
+<script src="script.js"></script>
 
 </body>
 </html>

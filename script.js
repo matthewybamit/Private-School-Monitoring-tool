@@ -1,4 +1,4 @@
- // ===================================
+       // ===================================
         // LOCAL STORAGE PERSISTENCE SYSTEM
         // ===================================
         const STORAGE_KEY = 'depedMonitoringFormData';
@@ -127,23 +127,9 @@
         }
 
         // ===================================
-        // ORIGINAL FUNCTIONALITY
+        // CONDITIONAL VISIBILITY SYSTEM
         // ===================================
-
-        // CHANGE 2: Program Offering Filter Logic
-        function initializeProgramFilter() {
-            const levelFilters = document.querySelectorAll('.level-filter');
-            
-            levelFilters.forEach(filter => {
-                filter.addEventListener('change', function() {
-                    applyProgramFilters();
-                });
-            });
-            
-            // Initial state - all visible
-            applyProgramFilters();
-        }
-
+        
         function applyProgramFilters() {
             const filters = {
                 kindergarten: document.getElementById('filterKindergarten').checked,
@@ -159,13 +145,129 @@
             // Apply filters to program sections
             document.querySelectorAll('.program-section').forEach(section => {
                 const program = section.getAttribute('data-program');
-                
                 if (filters[program]) {
                     section.classList.remove('hidden');
                 } else {
                     section.classList.add('hidden');
                 }
             });
+
+            // CONDITIONAL: Accreditation table rows
+            document.querySelectorAll('.accred-row').forEach(row => {
+                const program = row.getAttribute('data-program');
+                if (filters[program]) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Check if ANY program is enabled for accreditation section
+            const anyProgramEnabled = filters.kindergarten || filters.elementary || filters.jhs || filters.shs;
+            const accreditationSection = document.getElementById('accreditationSection');
+            if (anyProgramEnabled) {
+                accreditationSection.style.display = '';
+            } else {
+                accreditationSection.style.display = 'none';
+            }
+
+            // CONDITIONAL: LIS fields (grade-specific)
+            document.querySelectorAll('.lis-field').forEach(field => {
+                const program = field.getAttribute('data-program');
+                if (filters[program]) {
+                    field.style.display = '';
+                } else {
+                    field.style.display = 'none';
+                }
+            });
+
+            // CONDITIONAL: Warm Bodies fields (grade-specific)
+            document.querySelectorAll('.warm-field').forEach(field => {
+                const program = field.getAttribute('data-program');
+                if (filters[program]) {
+                    field.style.display = '';
+                } else {
+                    field.style.display = 'none';
+                }
+            });
+
+            // CONDITIONAL: Teachers table rows
+            document.querySelectorAll('.teacher-row').forEach(row => {
+                const program = row.getAttribute('data-program');
+                if (filters[program]) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Hide entire teachers section if no programs enabled
+            const teachersSection = document.getElementById('teachersSection');
+            if (anyProgramEnabled) {
+                teachersSection.style.display = '';
+            } else {
+                teachersSection.style.display = 'none';
+            }
+
+            // CONDITIONAL: Curriculum fields
+            document.querySelectorAll('.curriculum-field').forEach(field => {
+                const program = field.getAttribute('data-program');
+                if (filters[program]) {
+                    field.style.display = '';
+                } else {
+                    field.style.display = 'none';
+                }
+            });
+
+            // Hide entire curriculum section if no programs enabled
+            const curriculumSection = document.getElementById('curriculumSection');
+            if (anyProgramEnabled) {
+                curriculumSection.style.display = '';
+            } else {
+                curriculumSection.style.display = 'none';
+            }
+
+            // CONDITIONAL: SHS Labs section
+            const shsLabsSection = document.getElementById('shsLabsSection');
+            if (filters.shs) {
+                shsLabsSection.style.display = '';
+            } else {
+                shsLabsSection.style.display = 'none';
+            }
+        }
+
+        // ===================================
+        // SUBSIDY VISIBILITY CONTROLS
+        // ===================================
+        
+        function toggleSubsidyBlock(radioName, blockId) {
+            const radios = document.getElementsByName(radioName);
+            const block = document.getElementById(blockId);
+
+            function updateVisibility() {
+                const checkedRadio = Array.from(radios).find(r => r.checked);
+                if (checkedRadio && checkedRadio.value === 'yes') {
+                    block.style.display = '';
+                } else {
+                    block.style.display = 'none';
+                }
+            }
+            
+            radios.forEach(r => r.addEventListener('change', updateVisibility));
+            updateVisibility();
+        }
+
+        function initializeProgramFilter() {
+            const levelFilters = document.querySelectorAll('.level-filter');
+            
+            levelFilters.forEach(filter => {
+                filter.addEventListener('change', function() {
+                    applyProgramFilters();
+                });
+            });
+            
+            // CRITICAL FIX: Apply filters immediately on initialization
+            applyProgramFilters();
         }
 
         function clearForm() {
@@ -287,6 +389,37 @@
                         <td></td>
                     </tr>
                 `;
+            }
+
+            // Format subsidy data with Yes/No
+            function formatSubsidyData() {
+                let output = '';
+                
+                if (data.voucherOffered === 'yes') {
+                    output += `Voucher: Yes - ${data.voucherCount || '0'} recipients &nbsp;&nbsp;&nbsp;`;
+                } else if (data.voucherOffered === 'no') {
+                    output += `Voucher: No &nbsp;&nbsp;&nbsp;`;
+                } else {
+                    output += `Voucher: ____ &nbsp;&nbsp;&nbsp;`;
+                }
+                
+                if (data.escOffered === 'yes') {
+                    output += `ESC: Yes - ${data.escCount || '0'} recipients &nbsp;&nbsp;&nbsp;`;
+                } else if (data.escOffered === 'no') {
+                    output += `ESC: No &nbsp;&nbsp;&nbsp;`;
+                } else {
+                    output += `ESC: ____ &nbsp;&nbsp;&nbsp;`;
+                }
+                
+                if (data.jdvpOffered === 'yes') {
+                    output += `JDVP: Yes - ${data.jdvpCount || '0'} recipients`;
+                } else if (data.jdvpOffered === 'no') {
+                    output += `JDVP: No`;
+                } else {
+                    output += `JDVP: ____`;
+                }
+                
+                return output;
             }
 
             const htmlContent = `
@@ -466,7 +599,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3"><strong>Total Number of Learners Warm Bodies (as of January, 2025)</strong></td>
+                            <td colspan="3"><strong>Total Number of Learners Head Counts</strong></td>
                         </tr>
                         <tr>
                             <td colspan="3">
@@ -480,9 +613,7 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                Voucher ${data.voucherCount || '____'} &nbsp;&nbsp;&nbsp;
-                                ESC ${data.escCount || '____'} &nbsp;&nbsp;&nbsp;
-                                JDVP ${data.jdvpCount || '____'}
+                                ${formatSubsidyData()}
                             </td>
                         </tr>
                         <tr>
@@ -720,7 +851,7 @@
                     <p>${(data.generalObservations || '').replace(/\n/g, '<br>')}</p>
                     <p>_________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________</p>
 
-                    <p class="section-title">PART 4: STATUS OF THE SIGNIFICANT FINDINGS OF THE MONITORING TEAM IN MARCH 2024.</p>
+                    <p class="section-title">PART 4: STATUS OF THE SIGNIFICANT FINDINGS OF THE MONITORING TEAM DURING THE PREVIOUS MONITORING.</p>
                     
                     <table>
                         <thead>
@@ -788,70 +919,92 @@
         }
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize program filter functionality
-            initializeProgramFilter();
+ // Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize program filter functionality
+    initializeProgramFilter();
 
-            // Load saved data from Local Storage
-            const hasLoadedData = loadFromLocalStorage();
-            
-            // Set default date to today if no saved data
-            if (!hasLoadedData) {
-                const today = new Date().toISOString().split('T')[0];
-                const monitorDateInput = document.querySelector('input[name="monitorDate"]');
-                if (monitorDateInput) {
-                    monitorDateInput.value = today;
-                }
-            }
+    // Initialize subsidy visibility controls
+    toggleSubsidyBlock('voucherOffered', 'voucherCountBlock');
+    toggleSubsidyBlock('escOffered', 'escCountBlock');
+    toggleSubsidyBlock('jdvpOffered', 'jdvpCountBlock');
 
-            // Capture initial state after loading
-            captureInitialState();
-            
-            // Setup auto-save functionality
-            setupAutoSave();
-            
-            // Setup navigation warning
-            setupNavigationWarning();
-            
-            // Add validation messages
-            const requiredInputs = document.querySelectorAll('input[required]');
-            requiredInputs.forEach(input => {
-                input.addEventListener('invalid', function() {
-                    this.setCustomValidity('This field is required for the monitoring report.');
-                });
-                input.addEventListener('input', function() {
-                    this.setCustomValidity('');
-                });
-            });
-
-            // Checkbox mutual exclusivity for facilities
-            const facilities = [
-                'building', 'athletics', 'playground', 'classrooms', 'clinic', 
-                'library', 'computer', 'registrar', 'faculty', 'guidance', 
-                'canteen', 'principal', 'science', 'practice', 'emergency', 
-                'signages', 'fireexit', 'malerest', 'femalerest', 'other'
-            ];
-            
-            facilities.forEach(fac => {
-                const evidentBox = document.querySelector(`input[name="fac_${fac}_evident"]`);
-                const notEvidentBox = document.querySelector(`input[name="fac_${fac}_not"]`);
-                
-                if (evidentBox && notEvidentBox) {
-                    evidentBox.addEventListener('change', function() {
-                        if (this.checked) notEvidentBox.checked = false;
-                    });
-                    notEvidentBox.addEventListener('change', function() {
-                        if (this.checked) evidentBox.checked = false;
-                    });
+    // Load saved data from Local Storage
+    const hasLoadedData = loadFromLocalStorage();
+    
+    // CRITICAL FIX: Apply filters AFTER loading data to ensure visibility reflects saved state
+    applyProgramFilters();
+    
+    // CRITICAL FIX: Re-trigger subsidy visibility after loading saved data
+    if (hasLoadedData) {
+        // Force update subsidy field visibility after data is loaded
+        ['voucherOffered', 'escOffered', 'jdvpOffered'].forEach(radioName => {
+            const radios = document.getElementsByName(radioName);
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    radio.dispatchEvent(new Event('change'));
                 }
             });
-
-            console.log('✅ DepEd Monitoring Tool initialized with auto-save and navigation protection');
-            
-            // Show notification if data was loaded
-            if (hasLoadedData) {
-                setTimeout(() => {
-                    alert('✅ Previously saved data has been restored!');
-                }, 500);
-            }
         });
+    }
+    
+    // Set default date to today if no saved data
+    if (!hasLoadedData) {
+        const today = new Date().toISOString().split('T')[0];
+        const monitorDateInput = document.querySelector('input[name="monitorDate"]');
+        if (monitorDateInput) {
+            monitorDateInput.value = today;
+        }
+    }
+
+    // Capture initial state after loading
+    captureInitialState();
+    
+    // Setup auto-save functionality
+    setupAutoSave();
+    
+    // Setup navigation warning
+    setupNavigationWarning();
+    
+    // Add validation messages
+    const requiredInputs = document.querySelectorAll('input[required]');
+    requiredInputs.forEach(input => {
+        input.addEventListener('invalid', function() {
+            this.setCustomValidity('This field is required for the monitoring report.');
+        });
+        input.addEventListener('input', function() {
+            this.setCustomValidity('');
+        });
+    });
+
+    // Checkbox mutual exclusivity for facilities
+    const facilities = [
+        'building', 'athletics', 'playground', 'classrooms', 'clinic', 
+        'library', 'computer', 'registrar', 'faculty', 'guidance', 
+        'canteen', 'principal', 'science', 'practice', 'emergency', 
+        'signages', 'fireexit', 'malerest', 'femalerest', 'other'
+    ];
+    
+    facilities.forEach(fac => {
+        const evidentBox = document.querySelector(`input[name="fac_${fac}_evident"]`);
+        const notEvidentBox = document.querySelector(`input[name="fac_${fac}_not"]`);
+        
+        if (evidentBox && notEvidentBox) {
+            evidentBox.addEventListener('change', function() {
+                if (this.checked) notEvidentBox.checked = false;
+            });
+            notEvidentBox.addEventListener('change', function() {
+                if (this.checked) evidentBox.checked = false;
+            });
+        }
+    });
+
+    console.log('✅ DepEd Monitoring Tool initialized with auto-save and navigation protection');
+    
+    // Show notification if data was loaded
+    if (hasLoadedData) {
+        setTimeout(() => {
+            alert('✅ Previously saved data has been restored!');
+        }, 500);
+    }
+});
