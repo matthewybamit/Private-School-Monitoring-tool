@@ -312,45 +312,46 @@
             return data;
         }
 
-        function generateDocx() {
-            const loading = document.getElementById('loading');
-            loading.classList.add('active');
+     function generateDocx() {
+    const loading = document.getElementById('loading');
+    loading.classList.add('active');
 
-            setTimeout(() => {
-                try {
-                    const data = getFormData();
-                    
-                    // Get school name and SDO for filename
-                    const schoolName = data.schoolNameDeped || data.schoolNameSec || 'School';
-                    const division = data.sdo || 'Division';
-                    
-                    // Get current date in YYYY-MM-DD format
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const dateStr = `${year}-${month}-${day}`;
-                    
-                    // Clean the names for filename (remove special characters)
-                    const cleanSchoolName = schoolName.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_');
-                    const cleanDivision = division.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_');
-                    
-                    // Create filename in format: SchoolName_Division_YYYY-MM-DD.doc
-                    const fileName = `${cleanSchoolName}_${cleanDivision}_${dateStr}.doc`;
-                    
-                    createWordDocument(data, fileName);
-                    
-                    // After successful generation, update initial state
-                    captureInitialState();
-                    hasUnsavedChanges = false;
-                    
-                } catch (error) {
-                    alert('Error generating document: ' + error.message);
-                } finally {
-                    loading.classList.remove('active');
-                }
-            }, 500);
+    setTimeout(() => {
+        try {
+            const data = getFormData();
+            
+            // Get school name and SDO for filename
+            const schoolName = data.schoolNameDeped || data.schoolNameSec || 'School';
+            const division = data.sdo || 'Division';
+            
+            // Get current date in YYYY-MM-DD format
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            
+            // Clean the names for filename (remove special characters)
+            const cleanSchoolName = schoolName.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_');
+            const cleanDivision = division.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_');
+            
+            // Create filename in format: Division_SchoolName_YYYY-MM-DD.doc
+            const fileName = `${cleanDivision}_${cleanSchoolName}_${dateStr}.doc`;
+            
+            createWordDocument(data, fileName);
+            
+            // After successful generation, update initial state
+            captureInitialState();
+            hasUnsavedChanges = false;
+            
+        } catch (error) {
+            alert('Error generating document: ' + error.message);
+        } finally {
+            loading.classList.remove('active');
         }
+    }, 500);
+}
+
 
         function formatCheckbox(value) {
             return value ? '☑' : '☐';
